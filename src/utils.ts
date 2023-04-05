@@ -27,7 +27,9 @@ export const toSetHostUnits = (r: T.Host[]): T.SetHostUnit[] =>
 export const getCommand = (c: T.Command) => "namecheap.domains.dns." + c;
 
 export const getParamsString = (params: { [p: string]: string }) =>
+  // @ts-ignore
   Object.entries(params)
+    // @ts-ignore
     .map(([k, v]) => [k, encodeURIComponent(v)].join("="))
     .join("&");
 

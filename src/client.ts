@@ -41,7 +41,7 @@ class NamecheapClient {
    * @param tld
    * @returns
    */
-  getHosts = async ({ SLD, TLD }: T.Domain): Promise<T.Host[]> => {
+  getHosts = async ({ SLD, TLD }: T.Domain) => {
     const url = this.getUrl({ SLD, TLD, Command: U.getCommand("getHosts") });
     const { body } = await request(url);
 
@@ -52,7 +52,7 @@ class NamecheapClient {
     { SLD, TLD }: T.Domain,
     hosts: T.SetHostUnit[],
     EmailType: T.EmailType = "MX" // by default custom MX
-  ): Promise<{ body: string; status: number }> => {
+  ) => {
     const params: { [k: string]: string } = {
       SLD,
       TLD,
@@ -62,6 +62,7 @@ class NamecheapClient {
 
     // add suffix to keys and add to the list of params
     hosts.forEach((host, i) =>
+      // @ts-ignore
       Object.entries(host).map(([k, v]) => {
         params[[k, i + 1].join("")] = String(v);
       })
@@ -80,10 +81,7 @@ class NamecheapClient {
    * @param hosts
    * @returns
    */
-  addHosts = async (
-    domain: T.Domain,
-    hosts: T.SetHostUnit[]
-  ): Promise<{ body: string; status: number }> => {
+  addHosts = async (domain: T.Domain, hosts: T.SetHostUnit[]) => {
     if (hosts.length === 0) {
       throw Error("hosts must not be empty");
     }
@@ -106,6 +104,7 @@ class NamecheapClient {
     const existingHosts = await this.getHosts(domain);
 
     const hostsToBeReAdded = existingHosts.filter(
+      // @ts-ignore
       (x) => !hostIds.includes(x.HostId)
     );
 
@@ -126,6 +125,7 @@ class NamecheapClient {
     const existingHosts = await this.getHosts(domain);
 
     const hostsWithUpdate = existingHosts.map((host) => {
+      // @ts-ignore
       if (hostIds.includes(host.HostId)) {
         return hostsToBeUpdated[host.HostId];
       }
